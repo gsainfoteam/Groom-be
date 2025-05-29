@@ -15,28 +15,28 @@ export class RoommateFilterDto {
   @IsOptional()
   @IsNumber()
   @Min(0)
-  @Max(23)
+  @Max(11)
   @Transform(({ value }) => Number(value))
   sleepTimeStart?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
-  @Max(23)
+  @Max(11)
   @Transform(({ value }) => Number(value))
   sleepTimeEnd?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
-  @Max(23)
+  @Max(11)
   @Transform(({ value }) => Number(value))
   wakeUpTimeStart?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
-  @Max(23)
+  @Max(11)
   @Transform(({ value }) => Number(value))
   wakeUpTimeEnd?: number;
 

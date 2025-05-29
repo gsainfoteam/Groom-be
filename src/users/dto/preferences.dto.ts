@@ -9,12 +9,12 @@ export class PreferencesDto {
 
   @IsNumber()
   @Min(0)
-  @Max(23)
+  @Max(11)
   sleepTime: number;
 
   @IsNumber()
   @Min(0)
-  @Max(23)
+  @Max(11)
   wakeUpTime: number;
 
   @IsBoolean()

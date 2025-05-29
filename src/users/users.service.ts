@@ -34,36 +34,34 @@ export class UsersService {
     );
 
     // 매칭 점수 계산 및 결과 반환
-    return potentialMatches.map(match => {
+    const matches = potentialMatches.map(match => {
       let score = 0;
       const matchPrefs = match.preferences;
       const userPrefs = user.preferences;
 
       // 수면 시간 유사도 (총 40점)
-      // 취침/기상 시간이 1시간 이내 차이나면 각각 20점
       if (Math.abs(matchPrefs.sleepTime - userPrefs.sleepTime) <= 1) score += 20;
       if (Math.abs(matchPrefs.wakeUpTime - userPrefs.wakeUpTime) <= 1) score += 20;
 
       // 생활 습관 유사도 (총 40점)
-      // - 코골이 여부: 10점
-      // - 흡연 여부: 15점
-      // - 청소 빈도: 15점
       if (matchPrefs.isSnoring === userPrefs.isSnoring) score += 10;
       if (matchPrefs.isSmoking === userPrefs.isSmoking) score += 15;
       if (matchPrefs.cleanupFrequency === userPrefs.cleanupFrequency) score += 15;
       
       // 온도 민감도 (총 20점)
-      // - 추위 민감도: 10점
-      // - 더위 민감도: 10점
       if (matchPrefs.isColdSensitive === userPrefs.isColdSensitive) score += 10;
       if (matchPrefs.isHotSensitive === userPrefs.isHotSensitive) score += 10;
 
-      // 매칭 결과에 점수를 포함하여 반환
       return {
         ...match,
         matchScore: score,
       };
-    }).sort((a, b) => b.matchScore - a.matchScore); // 점수가 높은 순으로 정렬
+    }).sort((a, b) => b.matchScore - a.matchScore);
+
+    return {
+      total: matches.length,
+      matches
+    };
   }
 
   // 특정 사용자의 프로필 조회
@@ -79,14 +77,14 @@ export class UsersService {
       throw new Error('User not found');
     }
 
-    const matches = await this.usersRepository.findByFilters(
+    const filteredMatches = await this.usersRepository.findByFilters(
       uuid,
       user.isMale,
       filters
     );
 
     // 매칭 점수 계산
-    return matches.map(match => {
+    const matches = filteredMatches.map(match => {
       let score = 0;
       const matchPrefs = match.preferences;
       const userPrefs = user.preferences;
@@ -109,5 +107,10 @@ export class UsersService {
         matchScore: score,
       };
     }).sort((a, b) => b.matchScore - a.matchScore);
+
+    return {
+      total: matches.length,
+      matches
+    };
   }
 } 
