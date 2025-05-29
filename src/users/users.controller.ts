@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Put, Body, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto, RoommateFilterDto } from './dto';
 
 // 사용자 관련 HTTP 엔드포인트를 처리하는 컨트롤러
 // 기본 경로: /users
@@ -37,5 +37,14 @@ export class UsersController {
   @Get(':id/matches')
   async findMatches(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.findPotentialRoommates(id);
+  }
+
+  // 필터 조건으로 룸메이트 검색
+  @Get(':id/filtered-matches')
+  async findFilteredMatches(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() filters: RoommateFilterDto
+  ) {
+    return await this.usersService.findRoommatesByFilters(id, filters);
   }
 } 

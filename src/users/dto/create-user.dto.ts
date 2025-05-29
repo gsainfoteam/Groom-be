@@ -23,8 +23,6 @@ export class CreateUserDto {
   major: string;
 
   @IsNumber()
-  @Min(17)
-  @Max(40)
   age: number;
 
   @IsString()

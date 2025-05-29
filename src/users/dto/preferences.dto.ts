@@ -27,7 +27,7 @@ export class PreferencesDto {
   isHotSensitive: boolean;
 
   @IsNumber()
-  @Min(1)
+  @Min(0)
   @Max(7)
   cleanupFrequency: number;
 } 

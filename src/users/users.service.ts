@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { users } from '../db/schema';
 import { UsersRepository } from './users.repository';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto, RoommateFilterDto } from './dto';
 
 // 사용자 관련 비즈니스 로직을 처리하는 서비스
 @Injectable()
@@ -70,5 +70,45 @@ export class UsersService {
   // 특정 사용자의 프로필 조회
   async getProfile(id: number) {
     return await this.usersRepository.findById(id);
+  }
+
+  // 필터 조건으로 룸메이트 찾기
+  async findRoommatesByFilters(userId: number, filters: RoommateFilterDto) {
+    const user = await this.usersRepository.findById(userId);
+    
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const matches = await this.usersRepository.findByFilters(
+      userId,
+      user.isMale,
+      filters
+    );
+
+    // 매칭 점수 계산
+    return matches.map(match => {
+      let score = 0;
+      const matchPrefs = match.preferences;
+      const userPrefs = user.preferences;
+
+      // 수면 시간 유사도 (40점)
+      if (Math.abs(matchPrefs.sleepTime - userPrefs.sleepTime) <= 1) score += 20;
+      if (Math.abs(matchPrefs.wakeUpTime - userPrefs.wakeUpTime) <= 1) score += 20;
+
+      // 생활 습관 유사도 (40점)
+      if (matchPrefs.isSnoring === userPrefs.isSnoring) score += 10;
+      if (matchPrefs.isSmoking === userPrefs.isSmoking) score += 15;
+      if (matchPrefs.cleanupFrequency === userPrefs.cleanupFrequency) score += 15;
+      
+      // 온도 민감도 (20점)
+      if (matchPrefs.isColdSensitive === userPrefs.isColdSensitive) score += 10;
+      if (matchPrefs.isHotSensitive === userPrefs.isHotSensitive) score += 10;
+
+      return {
+        ...match,
+        matchScore: score,
+      };
+    }).sort((a, b) => b.matchScore - a.matchScore);
   }
 } 
