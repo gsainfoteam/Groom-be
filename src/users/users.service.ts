@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { users } from '../db/schema';
 import { UsersRepository } from './users.repository';
+import { CreateUserDto, UpdateUserDto } from './dto';
 
 // 사용자 관련 비즈니스 로직을 처리하는 서비스
 @Injectable()
@@ -8,12 +9,12 @@ export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   // 새로운 사용자 프로필 생성
-  async createProfile(userData: Omit<typeof users.$inferInsert, 'id' | 'createdAt' | 'updatedAt'>) {
+  async createProfile(userData: CreateUserDto) {
     return await this.usersRepository.create(userData);
   }
 
   // 기존 사용자 프로필 업데이트
-  async updateProfile(id: number, userData: Partial<typeof users.$inferInsert>) {
+  async updateProfile(id: number, userData: UpdateUserDto) {
     return await this.usersRepository.update(id, userData);
   }
 
@@ -29,7 +30,7 @@ export class UsersService {
     // 매칭 조건에 맞는 사용자 목록 조회
     const potentialMatches = await this.usersRepository.findPotentialMatches(
       userId,
-      user.gender,
+      user.isMale,
       user.age
     );
 

@@ -35,13 +35,13 @@ export class UsersRepository {
   }
 
   // 매칭 가능한 사용자 목록 찾기
-  async findPotentialMatches(userId: number, userGender: number, userAge: number) {
+  async findPotentialMatches(userId: number, userIsMale: boolean, userAge: number) {
     return await db
       .select()
       .from(users)
       .where(
         and(
-          eq(users.gender, userGender),
+          eq(users.isMale, userIsMale),
           or(
             gt(users.age, userAge - 4),
             lt(users.age, userAge + 4)

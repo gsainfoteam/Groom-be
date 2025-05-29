@@ -1,26 +1,28 @@
 import { pgTable, serial, text, integer, boolean, jsonb, timestamp } from 'drizzle-orm/pg-core';
-import { Gender } from '../users/enums/gender.enum';
-import { MBTI } from '../users/enums/mbti.enum';
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
+  uuid: integer('uuid').notNull(),
+  profileImage: text('profile_image').notNull(),
+  isMale: boolean('is_male').notNull(),
   nickname: text('nickname').notNull(),
-  studentId: text('student_id').notNull(),
+  studentNumber: integer('student_number').notNull(),
   major: text('major').notNull(),
   age: integer('age').notNull(),
-  gender: integer('gender').notNull().$type<Gender>(),
+  gender: text('gender').notNull(),
   nationality: text('nationality').notNull(),
-  mbti: text('mbti').notNull().$type<MBTI>(),
+  mbti: integer('mbti').notNull(),
   preferences: jsonb('preferences').notNull().$type<{
     isSnoring: boolean;
     isSmoking: boolean;
     sleepTime: number;
     wakeUpTime: number;
+    hasRefrigerator: boolean;
     isColdSensitive: boolean;
     isHotSensitive: boolean;
     cleanupFrequency: number;
   }>(),
-  imageUrls: jsonb('image_urls').notNull().$type<string[]>(),
+  introduction: text('introduction').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 }); 
