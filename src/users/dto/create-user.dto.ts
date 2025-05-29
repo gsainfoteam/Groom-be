@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsBoolean, Min, Max, ValidateNested } from 'class-validator';
+import { IsString, IsNumber, IsBoolean, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PreferencesDto } from './preferences.dto';
 
