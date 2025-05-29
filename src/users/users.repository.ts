@@ -3,19 +3,24 @@ import { Injectable } from '@nestjs/common';
 import { db } from '../index';
 import { users } from '../db/schema';
 import { and, eq, gt, lt, ne, or } from 'drizzle-orm';
+import { CreateUserDto, UpdateUserDto } from '../users/dto';
 
 @Injectable()
 export class UsersRepository {
   // 새로운 사용자 생성
-  async create(userData: Omit<typeof users.$inferInsert, 'id' | 'createdAt' | 'updatedAt'>) {
-    return await db.insert(users).values(userData).returning();
+  async create(userData: CreateUserDto) {
+    return await db.insert(users).values({
+      ...userData,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }).returning();
   }
 
   // 사용자 정보 업데이트
-  async update(id: number, userData: Partial<typeof users.$inferInsert>) {
+  async update(id: number, userData: UpdateUserDto) {
     return await db
       .update(users)
-      .set({ ...userData, updatedAt: new Date().toISOString() })
+      .set({ ...userData, updatedAt: new Date() })
       .where(eq(users.id, id))
       .returning();
   }
