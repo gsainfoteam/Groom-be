@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { users } from '../db/schema';
 import { UsersRepository } from './users.repository';
 import { CreateUserDto, UpdateUserDto, RoommateFilterDto } from './dto';
 
@@ -14,14 +13,14 @@ export class UsersService {
   }
 
   // 기존 사용자 프로필 업데이트
-  async updateProfile(id: number, userData: UpdateUserDto) {
-    return await this.usersRepository.update(id, userData);
+  async updateProfile(uuid: number, userData: UpdateUserDto) {
+    return await this.usersRepository.update(uuid, userData);
   }
 
   // 잠재적인 룸메이트 찾기
-  async findPotentialRoommates(userId: number) {
+  async findPotentialRoommates(uuid: number) {
     // 현재 사용자 정보 조회
-    const user = await this.usersRepository.findById(userId);
+    const user = await this.usersRepository.findByUuid(uuid);
 
     if (!user) {
       throw new Error('User not found');
@@ -29,7 +28,7 @@ export class UsersService {
 
     // 매칭 조건에 맞는 사용자 목록 조회
     const potentialMatches = await this.usersRepository.findPotentialMatches(
-      userId,
+      uuid,
       user.isMale,
       user.age
     );
@@ -68,20 +67,20 @@ export class UsersService {
   }
 
   // 특정 사용자의 프로필 조회
-  async getProfile(id: number) {
-    return await this.usersRepository.findById(id);
+  async getProfile(uuid: number) {
+    return await this.usersRepository.findByUuid(uuid);
   }
 
   // 필터 조건으로 룸메이트 찾기
-  async findRoommatesByFilters(userId: number, filters: RoommateFilterDto) {
-    const user = await this.usersRepository.findById(userId);
+  async findRoommatesByFilters(uuid: number, filters: RoommateFilterDto) {
+    const user = await this.usersRepository.findByUuid(uuid);
     
     if (!user) {
       throw new Error('User not found');
     }
 
     const matches = await this.usersRepository.findByFilters(
-      userId,
+      uuid,
       user.isMale,
       filters
     );

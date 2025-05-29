@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto, RoommateFilterDto } from './dto';
 
@@ -8,43 +8,39 @@ import { CreateUserDto, UpdateUserDto, RoommateFilterDto } from './dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // 새로운 프로필 생성
-  // POST /users
+  // 새로운 사용자 프로필 생성
   @Post()
-  async createProfile(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.createProfile(createUserDto);
+  async createProfile(@Body() userData: CreateUserDto) {
+    return await this.usersService.createProfile(userData);
   }
 
-  // 기존 프로필 업데이트
-  // PUT /users/:id
-  @Put(':id')
+  // 기존 사용자 프로필 업데이트
+  @Put(':uuid')
   async updateProfile(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
+    @Param('uuid') uuid: number,
+    @Body() userData: UpdateUserDto,
   ) {
-    return await this.usersService.updateProfile(id, updateUserDto);
+    return await this.usersService.updateProfile(uuid, userData);
   }
 
-  // 특정 프로필 조회
-  // GET /users/:id
-  @Get(':id')
-  async getProfile(@Param('id', ParseIntPipe) id: number) {
-    return await this.usersService.getProfile(id);
+  // 특정 사용자의 프로필 조회
+  @Get(':uuid')
+  async getProfile(@Param('uuid') uuid: number) {
+    return await this.usersService.getProfile(uuid);
   }
 
   // 잠재적인 룸메이트 목록 조회
-  // GET /users/:id/matches
-  @Get(':id/matches')
-  async findMatches(@Param('id', ParseIntPipe) id: number) {
-    return await this.usersService.findPotentialRoommates(id);
+  @Get(':uuid/matches')
+  async getPotentialRoommates(@Param('uuid') uuid: number) {
+    return await this.usersService.findPotentialRoommates(uuid);
   }
 
-  // 필터 조건으로 룸메이트 검색
-  @Get(':id/filtered-matches')
-  async findFilteredMatches(
-    @Param('id', ParseIntPipe) id: number,
-    @Query() filters: RoommateFilterDto
+  // 필터링된 룸메이트 목록 조회
+  @Get(':uuid/filtered-matches')
+  async getFilteredRoommates(
+    @Param('uuid') uuid: number,
+    @Query() filters: RoommateFilterDto,
   ) {
-    return await this.usersService.findRoommatesByFilters(id, filters);
+    return await this.usersService.findRoommatesByFilters(uuid, filters);
   }
 } 

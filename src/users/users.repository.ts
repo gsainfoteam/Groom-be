@@ -17,25 +17,25 @@ export class UsersRepository {
   }
 
   // 사용자 정보 업데이트
-  async update(id: number, userData: UpdateUserDto) {
+  async update(uuid: number, userData: UpdateUserDto) {
     return await db
       .update(users)
       .set({ ...userData, updatedAt: new Date() })
-      .where(eq(users.id, id))
+      .where(eq(users.uuid, uuid))
       .returning();
   }
 
-  // ID로 사용자 찾기
-  async findById(id: number) {
+  // UUID로 사용자 찾기
+  async findByUuid(uuid: number) {
     return await db
       .select()
       .from(users)
-      .where(eq(users.id, id))
+      .where(eq(users.uuid, uuid))
       .then(rows => rows[0]);
   }
 
   // 매칭 가능한 사용자 목록 찾기
-  async findPotentialMatches(userId: number, userIsMale: boolean, userAge: number) {
+  async findPotentialMatches(userUuid: number, userIsMale: boolean, userAge: number) {
     return await db
       .select()
       .from(users)
@@ -46,16 +46,16 @@ export class UsersRepository {
             gt(users.age, userAge - 4),
             lt(users.age, userAge + 4)
           ),
-          ne(users.id, userId)
+          ne(users.uuid, userUuid)
         )
       );
   }
 
   // 필터 조건으로 룸메이트 검색
-  async findByFilters(userId: number, userIsMale: boolean, filters: RoommateFilterDto) {
+  async findByFilters(userUuid: number, userIsMale: boolean, filters: RoommateFilterDto) {
     const conditions: SQL[] = [
       eq(users.isMale, userIsMale), // 같은 성별만
-      ne(users.id, userId), // 자기 자신 제외
+      ne(users.uuid, userUuid), // 자기 자신 제외
     ];
 
     // 나이 필터
