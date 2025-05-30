@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { ChatService } from './chat.service';
 import { SendMessageDto } from './dto/send-message.dto';
 import { JoinLeaveDto } from './dto/join-leave.dto';
+import { GetMessagesDto } from './dto/get-message.dto';
 
 @Controller('chat')
 export class ChatController {
@@ -28,9 +29,10 @@ export class ChatController {
     const msg = {
         event: 'new_message',
         data: {
-            username: body.nickname,
+            nickname: body.nickname,
             message: body.message,
             timestamp: body.timestamp,
+            ...(body.from && { from: body.from }),
             ...(body.image && { image: body.image }),
         },
     };
@@ -40,8 +42,8 @@ export class ChatController {
   }
 
   @Get('messages')
-  async getMessages(@Query('roomId') roomId: string) {
-    return await this.chatService.getMessages(roomId);
+  async getMessages(@Query() query: GetMessagesDto) {
+    return await this.chatService.getMessages(query.roomId);
   }
 
   // 유저 입장 알림
@@ -50,7 +52,7 @@ export class ChatController {
     this.chatService.sendMessageToUser(Number(body.to), {
       event: 'user_joined',
       data: {
-        username: body.nickname,
+        nickname: body.nickname,
         message: body.message,
         timestamp: body.timestamp,
       },
@@ -64,7 +66,7 @@ export class ChatController {
     this.chatService.sendMessageToUser(Number(body.to), {
       event: 'user_left',
       data: {
-        username: body.nickname,
+        nickname: body.nickname,
         message: body.message,
         timestamp: body.timestamp,
       },

@@ -18,7 +18,7 @@ export class ChatService {
   async saveMessage(roomId: string, msg: any) {
     await db.insert(messages).values({
       roomId,
-      sender: msg.data.username,
+      sender: msg.data.nickname,
       message: msg.data.message,
       image: msg.data.image ?? null,
       sentAt: msg.data.timestamp ? new Date(msg.data.timestamp) : new Date(),
@@ -68,7 +68,7 @@ export class ChatService {
       data: JSON.stringify(message),
     });
 
-    // 메시지 저장
+
     if (from) {
       const key = this.getChatKey(uuid.toString(), from);
       if (!this.roomMessages.has(key)) {

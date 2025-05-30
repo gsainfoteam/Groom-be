@@ -1,8 +1,8 @@
 // src/chat/dto/join-leave.dto.ts
-import { IsString } from 'class-validator';
+import { IsString, IsNumberString } from 'class-validator';
 
 export class JoinLeaveDto {
-  @IsString()
+  @IsNumberString()
   to: string;
 
   @IsString()

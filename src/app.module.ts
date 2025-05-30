@@ -15,6 +15,7 @@ import { ChatModule } from './chat/chat.module';
     }),
     // 사용자 관련 기능을 처리하는 모듈
     UsersModule,
+    ChatModule,
   ],
 })
 export class AppModule {}
