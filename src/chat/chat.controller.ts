@@ -24,24 +24,24 @@ export class ChatController {
 
   // 메시지 전송시 from 정보도 함께 전달
   @Post('send')
-  sendMessage(@Body() body: SendMessageDto) {
+  async sendMessage(@Body() body: SendMessageDto) {
     const msg = {
-      event: 'new_message',
-      data: {
-        username: body.nickname,
-        message: body.message,
-        timestamp: body.timestamp,
-        ...(body.image && { image: body.image }),
-      },
+        event: 'new_message',
+        data: {
+            username: body.nickname,
+            message: body.message,
+            timestamp: body.timestamp,
+            ...(body.image && { image: body.image }),
+        },
     };
-    this.chatService.saveMessage(body.roomId, msg);
+    await this.chatService.saveMessage(body.roomId, msg);
     this.chatService.broadcastToRoom(body.roomId, msg);
     return { status: 'ok' };
   }
 
   @Get('messages')
-  getMessages(@Query('roomId') roomId: string) {
-    return this.chatService.getMessages(roomId);
+  async getMessages(@Query('roomId') roomId: string) {
+    return await this.chatService.getMessages(roomId);
   }
 
   // 유저 입장 알림

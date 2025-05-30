@@ -1,4 +1,4 @@
-import { pgTable, text, integer, boolean, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, boolean, jsonb, serial, varchar, timestamp } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   uuid: integer('uuid').primaryKey(),
@@ -23,3 +23,12 @@ export const users = pgTable('users', {
   }>(),
   introduction: text('introduction').notNull(),
 }); 
+
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
+  roomId: varchar("room_id", { length: 255 }),
+  sender: varchar("sender", { length: 255 }),
+  message: text("message"),
+  image: text("image"), // base64 사용?
+  sentAt: timestamp("sent_at").defaultNow(),
+});

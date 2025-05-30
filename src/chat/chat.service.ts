@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Subject, Observable } from 'rxjs';
+import { db } from '../db/drizzle'; 
+import { messages } from '../db/schema';
+import { eq } from 'drizzle-orm';
 
 @Injectable()
 export class ChatService {
@@ -11,18 +14,20 @@ export class ChatService {
     return [user1, user2].sort().join('_');
   }
 
-  saveMessage(roomId: string, message: any) {
-    if (!this.roomMessages.has(roomId)) {
-        this.roomMessages.set(roomId, []);
-    }
-    const messages = this.roomMessages.get(roomId);
-    if (messages) {
-        messages.push(message);
-    }
+  // 메시지 저장
+  async saveMessage(roomId: string, msg: any) {
+    await db.insert(messages).values({
+      roomId,
+      sender: msg.data.username,
+      message: msg.data.message,
+      image: msg.data.image ?? null,
+      sentAt: msg.data.timestamp ? new Date(msg.data.timestamp) : new Date(),
+    });
   }
 
-  getMessages(roomId: string): any[] {
-    return this.roomMessages.get(roomId) || [];
+  // 메시지 조회
+  async getMessages(roomId: string) {
+    return await db.select().from(messages).where(eq(messages.roomId, roomId)).orderBy(messages.sentAt);
   }
 
   broadcastToRoom(roomId: string, message: any) {
