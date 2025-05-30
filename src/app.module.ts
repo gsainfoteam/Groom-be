@@ -2,6 +2,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
+import { ChatModule } from './chat/chat.module';
 
 // 애플리케이션의 루트 모듈
 // 전체 앱의 설정과 다른 모듈들을 통합
