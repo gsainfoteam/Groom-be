@@ -1,4 +1,4 @@
-import { pgTable, text, integer, boolean, jsonb, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, boolean, jsonb } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   uuid: integer('uuid').primaryKey(),
@@ -22,6 +22,4 @@ export const users = pgTable('users', {
     cleanupFrequency: number;
   }>(),
   introduction: text('introduction').notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
 }); 

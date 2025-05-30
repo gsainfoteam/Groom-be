@@ -11,8 +11,6 @@ export class UsersRepository {
   async create(userData: CreateUserDto) {
     return await db.insert(users).values({
       ...userData,
-      createdAt: new Date(),
-      updatedAt: new Date()
     }).returning();
   }
 
@@ -20,7 +18,7 @@ export class UsersRepository {
   async update(uuid: number, userData: UpdateUserDto) {
     return await db
       .update(users)
-      .set({ ...userData, updatedAt: new Date() })
+      .set({ ...userData })
       .where(eq(users.uuid, uuid))
       .returning();
   }
