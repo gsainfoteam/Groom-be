@@ -111,4 +111,13 @@ export class UsersRepository {
       .from(users)
       .where(and(...conditions));
   }
+
+  // 이메일로 사용자 찾기
+  async findByEmail(email: string) {
+    return await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .then(rows => rows[0]);
+  }
 } 

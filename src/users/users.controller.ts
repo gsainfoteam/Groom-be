@@ -1,12 +1,21 @@
 import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto, RoommateFilterDto } from './dto';
+import { CreateUserDto, UpdateUserDto, RoommateFilterDto, LoginDto } from './dto';
 
 // 사용자 관련 HTTP 엔드포인트를 처리하는 컨트롤러
 // 기본 경로: /users
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  // 로그인 및 프로필 생성
+  @Post('login')
+  async loginAndCreateProfile(
+    @Body('login') loginData: LoginDto,
+    @Body('profile') userData: CreateUserDto,
+  ) {
+    return await this.usersService.loginAndCreateProfile(loginData, userData);
+  }
 
   // 새로운 사용자 프로필 생성
   @Post()

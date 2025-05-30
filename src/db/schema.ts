@@ -2,6 +2,8 @@ import { pgTable, text, integer, boolean, jsonb } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   uuid: integer('uuid').primaryKey(),
+  email: text('email').notNull().unique(),
+  password: text('password').notNull(),
   profileImage: text('profile_image').notNull(),
   isMale: boolean('is_male').notNull(),
   nickname: text('nickname').notNull(),

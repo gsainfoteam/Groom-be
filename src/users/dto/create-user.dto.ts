@@ -1,9 +1,16 @@
-import { IsString, IsNumber, IsBoolean, ValidateNested } from 'class-validator';
+import { IsString, IsNumber, IsBoolean, ValidateNested, IsEmail, MinLength } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PreferencesDto } from './preferences.dto';
 
 // 사용자 생성을 위한 DTO
 export class CreateUserDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @MinLength(6)
+  password: string;
+
   @IsString()
   profileImage: string;
 

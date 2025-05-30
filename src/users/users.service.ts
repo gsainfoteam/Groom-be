@@ -1,11 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { CreateUserDto, UpdateUserDto, RoommateFilterDto } from './dto';
+import { CreateUserDto, UpdateUserDto, RoommateFilterDto, LoginDto } from './dto';
 
 // 사용자 관련 비즈니스 로직을 처리하는 서비스
 @Injectable()
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
+
+  // 로그인 및 프로필 생성
+  async loginAndCreateProfile(loginData: LoginDto, userData: CreateUserDto) {
+    // 이메일이 일치하는지 확인
+    if (loginData.email !== userData.email) {
+      throw new Error('Email mismatch between login and profile data');
+    }
+
+    // 이미 존재하는 사용자인지 확인
+    const existingUser = await this.usersRepository.findByEmail(loginData.email);
+    if (existingUser) {
+      // 비밀번호 확인
+      if (existingUser.password !== loginData.password) {
+        throw new UnauthorizedException('Invalid password');
+      }
+      return existingUser;
+    }
+
+    // 새 프로필 생성
+    return await this.usersRepository.create(userData);
+  }
 
   // 새로운 사용자 프로필 생성
   async createProfile(userData: CreateUserDto) {
